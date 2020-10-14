@@ -1,60 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    ;
-    <title>Todo app</title>
+    <title>Todo App</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'todo_app/index.css' %}">
 </head>
-<style>
-    h1 {
-        margin: 5px;
-        text-align: center;
-        padding: 5px;
-    }
-
-    h2 {
-        text-align: center;
-        text-decoration: underline;
-    }
-
-    div.done {
-        color: green;
-        font-weight: bold;
-    }
-
-    div.open {
-        color: red;
-        font-weight: bold;
-    }
-
-    div.todo {
-        display: block;
-        background: white;
-        border: 2px solid white;
-        border-radius: 10px;
-        margin: 5px;
-        text-align: center;
-    }
-
-    div.todo p {
-        font-size: 20px;
-        font-weight: bold;
-        text-decoration: underline;
-    }
-
-    div.todo div.description {
-        padding: 10px;
-    }
-
-    div.container {
-        background: greenyellow;
-        display: flex;
-        flex-direction: column;
-        margin: 0 auto;
-        padding: 10px;
-    }
-</style>
 <body>
 <h1>My Todo List</h1>
 {% if todos %}
@@ -63,19 +14,15 @@
             <div class="todo">
                 <p>{{ todo.title }}</p>
                 <div class="description">{{ todo.description }}</div>
-                {% if todo.is_done %} }
-                    <div class="done">DONE</div>
-                {% else %}
-                    <div class="open">NOT DONE</div>
-                {% endif %}
-
+                <a class="btn btn-primary" href='update/{{ todo.id }}'>Update</a>
+                <a class="btn btn-primary" href='delete/{{ todo.id }}'>Delete</a>
             </div>
         {% endfor %}
-
+        <a class="btn btn-primary" href="{% url 'create_todo' %}">Create</a>
     </div>
 {% else %}
-    <h2>No TODOS</h2>
+    <h2>No TODOs</h2>
+    <h2>Go to <a href={% url "create_todo" %}>/createTodo</a> to create a new TODO</h2>
 {% endif %}
-
 </body>
 </html>
