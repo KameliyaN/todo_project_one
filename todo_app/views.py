@@ -37,9 +37,8 @@ def index(request):
 
 def todos_all(request):
     if request.method == 'GET':
-        todos = TodoForm()
         context = {
-            'todos': todos
+            'todos': Todo.objects.all()
         }
         return render(request, 'todo_app/todos.html', context)
 
@@ -53,7 +52,7 @@ def create(request):
                 description=form.cleaned_data['description'],
                 is_done=False)
             todo.save()
-            return redirect('todos index')
+            return redirect('all_todos')
     else:
         form = TodoForm()
         context = {
@@ -64,17 +63,26 @@ def create(request):
 
 def update(request, pk):
     todo = Todo.objects.get(pk=pk)
-    if request.method == 'GET':
-        form = TodoForm
-        return index(request, form, 'update_todo', pk=pk)
+    if request.method == 'POST':
+        form = TodoForm(request.POST)
+        if form.is_valid():
+            todo.title = form.cleaned_data['title']
+            todo.description = form.cleaned_data['description']
+            todo.save()
+            return redirect('all_todos')
+    form = TodoForm(initial=todo.__dict__)
+    return render(request, 'todo_app/create.html', {'form': form})
 
-    form = TodoForm(request.POST)
-    if form.is_valid():
-        todo.title = form.cleaned_data['title']
-        todo.description = form.cleaned_data['description']
-        todo.save()
-        return index(request, form)
 
+def delete(request, pk):
+    todo = Todo.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = TodoForm(request.POST)
+        if form.is_valid():
+            todo.title = form.cleaned_data['title']
+            todo.description = form.cleaned_data['description']
+            todo.delete()
+            return redirect('all_todos')
 
-def delete(request, todo_id):
-    pass
+    form = TodoForm(initial=todo.__dict__)
+    return render(request, 'todo_app/create.html', {'form': form})
