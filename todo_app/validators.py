@@ -10,7 +10,7 @@ def validate_name(name):
 
 def password_validator(password):
     for char in password:
-        if not char.isdit() or not char.isalpha():
+        if not char.isdigit() or not char.isalpha():
             raise forms.ValidationError(f'Enter a valid password.')
 # pattern = r'([a-z]+)|([A-Z]+)|([0-9]+)'
 # matches = re.findall(pattern, password)

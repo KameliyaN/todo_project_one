@@ -3,16 +3,45 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from todo_app.forms import TodoForm, FormName
-from todo_app.models import Todo
+from todo_app.models import Todo, Name
 
 
 def index(request):
-    todos = Todo.objects.all()
-    context = {
-        'todos': todos,
+    if request.method == 'POST':
+        form = FormName(request.POST)
+        if form.is_valid():
+            form_name = Name(
+                name=form.cleaned_data['name'],
+                age=form.cleaned_data['age'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password'],
+                text=form.cleaned_data['text']
+            )
+            form_name.save()
+        # else:
+        #     form = FormName(request.POST)
+        #     context = {
+        #         'form': form
+        #     }
+        #     return render(request, 'todo_app/index.html', context)
 
-    }
-    return render(request, 'todo_app/index.html', context=context)
+        return redirect('all_todos')
+
+    else:
+        form_name = FormName()
+        context = {
+            'form_name': form_name
+        }
+        return render(request, 'todo_app/index.html', context)
+
+
+def todos_all(request):
+    if request.method == 'GET':
+        todos = TodoForm()
+        context = {
+            'todos': todos
+        }
+        return render(request, 'todo_app/todos.html', context)
 
 
 def create(request):
@@ -33,10 +62,18 @@ def create(request):
         return render(request, 'todo_app/create.html', context)
 
 
-def update(request, todo_id):
-    todo = Todo.objects.get(pk=todo_id)
+def update(request, pk):
+    todo = Todo.objects.get(pk=pk)
     if request.method == 'GET':
-        form=TodoForm
+        form = TodoForm
+        return index(request, form, 'update_todo', pk=pk)
+
+    form = TodoForm(request.POST)
+    if form.is_valid():
+        todo.title = form.cleaned_data['title']
+        todo.description = form.cleaned_data['description']
+        todo.save()
+        return index(request, form)
 
 
 def delete(request, todo_id):
