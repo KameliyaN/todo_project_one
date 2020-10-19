@@ -9,6 +9,7 @@ from todo_app.models import Todo, Name
 def index(request):
     if request.method == 'POST':
         form = FormName(request.POST)
+
         if form.is_valid():
             form_name = Name(
                 name=form.cleaned_data['name'],
@@ -17,15 +18,18 @@ def index(request):
                 password=form.cleaned_data['password'],
                 text=form.cleaned_data['text']
             )
-            form_name.save()
-        # else:
-        #     form = FormName(request.POST)
-        #     context = {
-        #         'form': form
-        #     }
-        #     return render(request, 'todo_app/index.html', context)
 
-        return redirect('all_todos')
+            form_name.save()
+            return redirect('all_todos')
+        else:
+
+            context = {
+                'form_name': FormName()
+            }
+
+            return render(request, 'todo_app/index.html', context)
+
+
 
     else:
         form_name = FormName()
@@ -53,6 +57,7 @@ def create(request):
                 is_done=False)
             todo.save()
             return redirect('all_todos')
+
     else:
         form = TodoForm()
         context = {

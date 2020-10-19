@@ -8,7 +8,10 @@
 <body>
 <form method="post">
     {% csrf_token %}
+
     {{ form_name.as_p }}
+     {{ form_name.name.errors }}
+
     <input type="submit" class="btn btn-primary" value='Submit'>
     {#    <a class="btn btn-primary" href="{% url 'all_todos' %}">Submit</a>#}
 
